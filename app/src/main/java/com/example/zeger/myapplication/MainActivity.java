@@ -14,11 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     String tag = "ACTIVITY_LIFECYCLE";
     String var = "";
-    EditText passED;
+   // EditText passED;
 
     boolean wrongPassword = false;
 
@@ -26,10 +27,43 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         // informasi activity ini menggunakan layout yang mana
         setContentView(R.layout.activity_main);
 
-        passED = (EditText)findViewById(R.id.password_textview);
+        EditText usernameET = (EditText) findViewById(R.id.username_textview);
+        final EditText passwordET = (EditText) findViewById(R.id.password_textview);
+        Button buttonLogin = (Button) findViewById(R.id.login_button);
+
+        // bikin aksi dalam button component
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!passwordET.getText().toString().equals("bayu")){
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                    dialog.setMessage("password anda salah");
+                    dialog.create().show();
+                    wrongPassword = true;
+                }else{
+                    Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("message","ini message dari main activity");
+
+                    detailIntent.putExtras(bundle);
+
+                    startActivityForResult(detailIntent,10);
+
+                }
+
+            }
+        });
+
+
+        /*
+        passED          = (EditText)findViewById(R.id.password_textview);
         EditText userED = (EditText)findViewById(R.id.username_textview);
         Button butLogin = (Button) findViewById(R.id.login_button);
 
@@ -68,7 +102,7 @@ public class MainActivity extends Activity {
         }
 
 
-        /*
+
         Button but = (Button) findViewById(R.id.but);
         Log.d(tag, "var = "+var);
 
@@ -85,6 +119,15 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        Log.d("ACTIVITY_RESULT","requestCode="+requestCode);
+        Log.d("ACTIVITY_RESULT","resultCode="+resultCode);
+
+        Bundle bundle = resultIntent.getExtras();
+        Log.d("ACTIVITY_RESULT","resultMsg="+bundle.getString("resultMsg"));
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         Log.d(tag, "The onStart() event");
@@ -96,6 +139,24 @@ public class MainActivity extends Activity {
         super.onResume();
         Log.d(tag, "The onResume() event");
     }
+
+    /*
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Create the text message with a string
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "");
+        sendIntent.setType("text/plain");
+
+        // Verify that the intent will resolve to an activity
+        if (sendIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(sendIntent);
+        }
+
+
+    }
+    */
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
